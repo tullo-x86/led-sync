@@ -1,0 +1,22 @@
+JST-SM tails (20x male+female pairs)
+Need 3-4 pairs per device
+https://smile.amazon.com/dp/B071H5XCN5/
+
+USB cable (24AWG power conductors)
+Need 1 per device
+https://www.digikey.com/product-detail/en/stewart-connector/SC-2ANK006F/380-1429-ND/8544575
+
+Enclosures (80mm x 40mm x 20mm)
+Need 1 per device
+https://www.digikey.com/product-detail/en/hammond-manufacturing/1551KTBU/HM1146-ND/2094884
+
+Programming headers (pin sets)
+Need 1 per device
+https://www.digikey.com/product-detail/en/sullins-connector-solutions/PREC006SFAN-RC/S1212EC-06-ND/2774968
+
+Terminal blocks (run wires to this for strain relief & easier maintenance)
+Need 1 per device (although not necessarily this specific type, need to look further)
+https://www.digikey.com/product-detail/en/altech-corporation/CB6-4H/1920-1263-ND/8547054
+
+Hook-up wire kit (need just one of these)
+https://smile.amazon.com/dp/B00B4ZQ3L0/
