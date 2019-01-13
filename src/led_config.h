@@ -1,11 +1,46 @@
 
+#include <FastLED.h>
+
 #define ARRAY0_LEDS 128
 #define ARRAY1_LEDS 128
 
 #define BUFFER_LENGTH (ARRAY0_LEDS + ARRAY1_LEDS)
 
-#define ARRAY0_DATA_PIN 6
-#define ARRAY1_DATA_PIN 7
+namespace LED
+{
 
-#define INPUT_PIN 4
-#define LED_INDICATOR_PIN 9 // Hardwired on the board
+class Array0
+{
+  public:
+    static constexpr uint8_t Length = ARRAY0_LEDS;
+    static constexpr uint8_t DataPin = 6;
+    static struct CRGB *Buffer;
+};
+
+class Array1
+{
+  public:
+    static constexpr uint8_t Length = ARRAY1_LEDS;
+    static constexpr uint8_t DataPin = 7;
+    static struct CRGB *Buffer;
+};
+
+enum class DebugMode
+{
+    None,
+    RadioRx,
+    RadioTx,
+    Update,
+    Render,
+    Present
+};
+
+class Indicator
+{
+  public:
+    static constexpr uint8_t Pin = 9;
+
+    static constexpr DebugMode Mode = DebugMode::None;
+};
+
+} // namespace LED

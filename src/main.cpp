@@ -5,19 +5,26 @@
 #include <RH_RF69.h>
 
 #include "led_config.h"
+using namespace LED;
 
 RH_RF69 radio;
 
-CRGB frameBuffer[BUFFER_LENGTH];
+struct CRGB frameBuffer[BUFFER_LENGTH];
+struct CRGB *Array0::Buffer = frameBuffer;
+struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 
-// Encryption key must = 16 bytes "0123456789ABCDEF"
-const char *const encryptionKey = "InterrobangKrewe";
+constexpr uint8_t L_EncKey = 16;
+// Key must be 16 bytes long:        "0123456789ABCDEF"
+const char *const P_EncKey PROGMEM = "InterrobangKrewe";
 
-const float RadioFrequency = 915.0;
+constexpr float RadioFrequency = 915.0;
 
 void initRadio()
 {
     radio.init();
+
+    char encryptionKey[L_EncKey];
+    strncpy_P(encryptionKey, P_EncKey, L_EncKey);
 
     radio.setFrequency(RadioFrequency);
     radio.setEncryptionKey((uint8_t *)(encryptionKey));
@@ -26,8 +33,8 @@ void initRadio()
 
 void initLeds()
 {
-    FastLED.addLeds<WS2811, ARRAY0_DATA_PIN, RGB>(frameBuffer, ARRAY0_LEDS).setCorrection(Typical8mmPixel);
-    FastLED.addLeds<WS2811, ARRAY1_DATA_PIN, RGB>(frameBuffer, ARRAY1_LEDS).setCorrection(Typical8mmPixel);
+    FastLED.addLeds<WS2811, Array0::DataPin, RGB>(Array0::Buffer, Array0::Length).setCorrection(Typical8mmPixel);
+    FastLED.addLeds<WS2811, Array1::DataPin, RGB>(Array1::Buffer, Array1::Length).setCorrection(Typical8mmPixel);
 
     // Fill array with faint grey
     fill_solid(frameBuffer, BUFFER_LENGTH, CRGB(8, 8, 8));
@@ -37,9 +44,7 @@ void setup()
 {
     initRadio();
     initLeds();
-    pinMode(INPUT_PIN, INPUT_PULLUP);
-
-    FastLED.show();
+    pinMode(Indicator::Pin, OUTPUT);
 }
 
 void loop()
