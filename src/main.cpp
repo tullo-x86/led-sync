@@ -17,6 +17,19 @@ constexpr uint8_t L_EncKey = 16;
 // Key must be 16 bytes long:        "0123456789ABCDEF"
 const char *const P_EncKey PROGMEM = "InterrobangKrewe";
 
+template<Step STEP>
+inline void beginIndicate() {
+    if (Indicator::DebugMode == STEP) {
+        digitalWrite(Indicator::Pin, HIGH);
+    }
+}
+template<Step STEP>
+inline void endIndicate() {
+    if (Indicator::DebugMode == STEP) {
+        digitalWrite(Indicator::Pin, LOW);
+    }
+}
+
 constexpr float RadioFrequency = 915.0;
 
 void initRadio()
@@ -49,5 +62,8 @@ void setup()
 
 void loop()
 {
+    beginIndicate<Step::Present>();
     FastLED.show();
+    endIndicate<Step::Present>();
+    delay(30);
 }

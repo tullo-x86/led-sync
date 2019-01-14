@@ -25,7 +25,7 @@ class Array1
     static struct CRGB *Buffer;
 };
 
-enum class DebugMode
+enum class Step
 {
     None,
     RadioRx,
@@ -40,7 +40,7 @@ class Indicator
   public:
     static constexpr uint8_t Pin = 9;
 
-    static constexpr DebugMode Mode = DebugMode::None;
+    static constexpr Step DebugMode = Step::None;
 };
 
 } // namespace LED
