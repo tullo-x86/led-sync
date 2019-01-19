@@ -1,4 +1,7 @@
 
+#ifndef LED_CONFIG_H
+#define LED_CONFIG_H
+
 #include <FastLED.h>
 
 #define ARRAY0_LEDS 128
@@ -44,3 +47,5 @@ class Indicator
 };
 
 } // namespace LED
+
+#endif

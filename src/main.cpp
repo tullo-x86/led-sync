@@ -7,6 +7,9 @@
 #include "led_config.h"
 using namespace LED;
 
+#include "playlist.h"
+#include "RotatingStripesPattern.h"
+
 RH_RF69 radio;
 
 struct CRGB frameBuffer[BUFFER_LENGTH];
@@ -16,6 +19,8 @@ struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 constexpr uint8_t L_EncKey = 16;
 // Key must be 16 bytes long:        "0123456789ABCDEF"
 const char *const P_EncKey PROGMEM = "InterrobangKrewe";
+
+Playlist<RotatingStripesPattern> playlist;
 
 template<Step STEP>
 inline void beginIndicate() {
@@ -42,6 +47,9 @@ void initRadio()
     radio.setFrequency(RadioFrequency);
     radio.setEncryptionKey((uint8_t *)(encryptionKey));
     radio.setModemConfig(RH_RF69::GFSK_Rb19_2Fd38_4);
+
+    playlist.goToIndex(0);
+    playlist.dispatchDraw();
 }
 
 void initLeds()
