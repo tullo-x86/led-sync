@@ -78,8 +78,13 @@ void loop()
     uint16_t deltaT = currentFrameTime - lastFrameTime;
     lastFrameTime = currentFrameTime;
 
+    beginIndicate<Step::Update>();
     playlist.dispatchUpdate(deltaT);
+    endIndicate<Step::Update>();
+
+    beginIndicate<Step::Render>();
     playlist.dispatchDraw();
+    endIndicate<Step::Render>();
 
     beginIndicate<Step::Present>();
     FastLED.show();
