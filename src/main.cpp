@@ -49,7 +49,6 @@ void initRadio()
     radio.setModemConfig(RH_RF69::GFSK_Rb19_2Fd38_4);
 
     playlist.goToIndex(0);
-    playlist.dispatchDraw();
 }
 
 void initLeds()
@@ -68,8 +67,16 @@ void setup()
     pinMode(Indicator::Pin, OUTPUT);
 }
 
+uint32_t lastFrameTime;
 void loop()
 {
+    uint32_t currentFrameTime = millis();
+    uint16_t deltaT = currentFrameTime - lastFrameTime;
+    lastFrameTime = currentFrameTime;
+
+    playlist.dispatchUpdate(deltaT);
+    playlist.dispatchDraw();
+
     beginIndicate<Step::Present>();
     FastLED.show();
     endIndicate<Step::Present>();
