@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include <RadioHead.h>
 #include <RH_RF69.h>
+#include <NintendoExtensionCtrl.h>
 
 #include "led_config.h"
 using namespace LED;
@@ -10,15 +11,9 @@ using namespace LED;
 #include "playlist.h"
 #include "RotatingStripesPattern.h"
 
-RH_RF69 radio;
-
 struct CRGB frameBuffer[BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
-
-constexpr uint8_t L_EncKey = 16;
-// Key must be 16 bytes long:        "0123456789ABCDEF"
-const char *const P_EncKey PROGMEM = "InterrobangKrewe";
 
 Playlist<RotatingStripesPattern> playlist;
 
@@ -35,7 +30,14 @@ inline void endIndicate() {
     }
 }
 
+RH_RF69 radio;
+
+// Key must be 16 bytes long:        "0123456789ABCDEF"
+const char *const P_EncKey PROGMEM = "InterrobangKrewe";
+constexpr uint8_t L_EncKey = 16;
 constexpr float RadioFrequency = 915.0;
+
+Nunchuk nunchuk;
 
 void initRadio()
 {
@@ -64,10 +66,17 @@ void initLeds()
     fill_solid(Array1::Buffer, Array1::Length, CRGB(0, 16, 0));
 }
 
+void initNunchuk() {
+    nunchuk.begin();
+
+    nunchuk.connect();
+}
+
 void setup()
 {
     initRadio();
     initLeds();
+    //initNunchuk();
     pinMode(Indicator::Pin, OUTPUT);
 }
 
