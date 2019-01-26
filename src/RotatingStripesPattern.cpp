@@ -54,7 +54,8 @@ void RotatingStripesPattern::draw() {
     int16_t pulseWidth = getPulseWidth();
     int16_t transitionWidth = pulseWidth / 4;
 
-    for (uint8_t i = 0; i < LED::Array1::Length; ++i) {
+    for (uint8_t i = 0; i < LED::Array0::Length; ++i) {
+        LED::Array0::Buffer[i] = CHSV(_hue + (uint8_t)0x80, 255, scale8(mask(i, _pulseOffset, pulseWidth, transitionWidth), val));
         LED::Array1::Buffer[i] = CHSV(_hue, 255, scale8(mask(i, _pulseOffset, pulseWidth, transitionWidth), val));
     }
 }

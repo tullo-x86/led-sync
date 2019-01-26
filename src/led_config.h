@@ -43,7 +43,7 @@ class Indicator
   public:
     static constexpr uint8_t Pin = 9;
 
-    static constexpr Step DebugMode = Step::None;
+    static constexpr Step DebugMode = Step::Render;
 };
 
 } // namespace LED

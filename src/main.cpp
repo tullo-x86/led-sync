@@ -98,5 +98,4 @@ void loop()
     beginIndicate<Step::Present>();
     FastLED.show();
     endIndicate<Step::Present>();
-    delay(30);
 }
