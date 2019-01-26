@@ -4,27 +4,6 @@
 
 #include "RotatingStripesPattern.h"
 
-void RotatingStripesPattern::reset() {
-    _hue = random8();
-    _pulseElapsed = 0;
-    _timeUntilHueShift = 0;
-    _pulseOffset = 0;
-}
-
-void RotatingStripesPattern::update(uint16_t deltaTime) {
-    _timeUntilHueShift -= deltaTime;
-    if (_timeUntilHueShift < 0) {
-        _hue++;
-        _timeUntilHueShift = HueShiftMs;
-    }
-
-    _pulseElapsed += deltaTime;
-    if (_pulseElapsed > PulsePeriodMs) _pulseElapsed = 0;
-
-    _pulseOffset += deltaTime;
-    _pulseOffset %= getPulseWidth();
-}
-
 uint8_t mask(uint8_t index, int16_t phaseOffset, int16_t pulseWidth, int16_t transitionWidth) {
 
     int32_t theta = (phaseOffset + index * 256) % pulseWidth;
@@ -47,17 +26,23 @@ uint8_t mask(uint8_t index, int16_t phaseOffset, int16_t pulseWidth, int16_t tra
     }
 }
 
-void RotatingStripesPattern::draw() {
-    uint8_t pulsePhase = (int32_t)_pulseElapsed * 255 / PulsePeriodMs;
-    uint8_t val = scale8(sin8(pulsePhase), 223) + 32;
+void RotatingStripesPattern::draw(const DrawState &state) {
+    // The V-wave, bringing global brightness up and down
+    uint32_t valElapsed = state.tsCurrent % ValWavePeriodMs;
+    uint8_t valPhase = (uint32_t)valElapsed * 255 / ValWavePeriodMs;
+    // uint8_t val = 32 + scale8(sin8(valPhase), (255-32));
+    uint8_t val = 128;
 
-    int16_t pulseWidth = getPulseWidth();
+    uint8_t hue = (state.tsCurrent / HueShiftMs);
+
+    const int16_t pulseWidth = 3400;
+    int16_t pulseOffset = state.tsCurrent / pulseWidth;
     int16_t transitionWidth = pulseWidth / 4;
 
     for (uint8_t i = 0; i < LED::Array0::Length; ++i) {
-        LED::Array0::Buffer[i] = CHSV(_hue + (uint8_t)0x80, 255, scale8(mask(i, _pulseOffset, pulseWidth, transitionWidth), val));
-        LED::Array1::Buffer[i] = CHSV(_hue, 255, scale8(mask(i, _pulseOffset, pulseWidth, transitionWidth), val));
+        LED::Array0::Buffer[i] = CHSV(hue + 0x80, 255, scale8(mask(i, pulseOffset, pulseWidth, transitionWidth), val));
+        LED::Array1::Buffer[i] = CHSV(hue + 0x00, 255, scale8(mask(i, pulseOffset, pulseWidth, transitionWidth), val));
     }
 }
 
-uint16_t RotatingStripesPattern::getPulseWidth() const { return LED::Array1::Length * (uint16_t)256 / 6; }
+//uint16_t RotatingStripesPattern::getPulseWidth() const { return LED::Array1::Length * (uint16_t)256 / 6; }

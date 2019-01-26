@@ -7,24 +7,15 @@
 
 #include "led_config.h"
 #include "lib8tion.h"
+#include "DrawState.h"
 
 class RotatingStripesPattern {
 public:
-    void reset();
-
-    void update(uint16_t deltaTime);
-    void draw();
+    void draw(const DrawState &state);
 
 private:
-    uint8_t _hue;
-    int16_t _timeUntilHueShift;
-    int16_t _pulseElapsed;
-    int16_t _pulseOffset;
-
     static constexpr int8_t HueShiftMs = 60;
-    static constexpr int16_t PulsePeriodMs = 2000;
-
-    uint16_t getPulseWidth() const;
+    static constexpr int16_t ValWavePeriodMs = 2000;
 };
 
 

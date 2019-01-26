@@ -8,14 +8,14 @@
 #include "led_config.h"
 using namespace LED;
 
-#include "playlist.h"
 #include "RotatingStripesPattern.h"
+#include "DrawState.h"
 
 struct CRGB frameBuffer[BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 
-Playlist<RotatingStripesPattern> playlist;
+RotatingStripesPattern pattern;
 
 template<Step STEP>
 inline void beginIndicate() {
@@ -39,6 +39,8 @@ constexpr float RadioFrequency = 915.0;
 
 Nunchuk nunchuk;
 
+DrawState drawState;
+
 void initRadio()
 {
     radio.init();
@@ -49,8 +51,6 @@ void initRadio()
     radio.setFrequency(RadioFrequency);
     radio.setEncryptionKey((uint8_t *)(encryptionKey));
     radio.setModemConfig(RH_RF69::GFSK_Rb19_2Fd38_4);
-
-    playlist.goToIndex(0);
 }
 
 void initLeds()
@@ -80,19 +80,17 @@ void setup()
     pinMode(Indicator::Pin, OUTPUT);
 }
 
-uint32_t lastFrameTime;
+uint32_t tsLast;
 void loop()
 {
-    uint32_t currentFrameTime = millis();
-    uint16_t deltaT = currentFrameTime - lastFrameTime;
-    lastFrameTime = currentFrameTime;
+    uint32_t tsNow = millis();
+    uint16_t elapsed = tsNow - tsLast;
+    tsLast = tsNow;
 
-    beginIndicate<Step::Update>();
-    playlist.dispatchUpdate(deltaT);
-    endIndicate<Step::Update>();
+    drawState.tsCurrent = tsNow;
 
     beginIndicate<Step::Render>();
-    playlist.dispatchDraw();
+    pattern.draw(drawState);
     endIndicate<Step::Render>();
 
     beginIndicate<Step::Present>();
