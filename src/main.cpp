@@ -10,6 +10,7 @@ using namespace LED;
 
 #include "WavesOverReef.h"
 #include "DrawState.h"
+#include "MathUtil.h"
 
 struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
@@ -88,7 +89,7 @@ void loop()
     uint32_t tsNow = millis();
 
     drawState.tsCurrent = tsNow;
-    drawState.analog = 0;
+    drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000));
 
     beginIndicate<Step::Render>();
     pattern.draw(drawState);

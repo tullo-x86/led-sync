@@ -3,6 +3,7 @@
 //
 
 #include "WavesOverReef.h"
+#include "MathUtil.h"
 
 const CHSVPalette16 bgPal(
     CHSV(128, 255, 255), // HUE_AQUA
@@ -48,12 +49,4 @@ void WavesOverReef::draw(const DrawState &state) {
             ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) +
             ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Array1Val);
     }
-}
-
-fract8 fractOf(uint16_t dividend, uint16_t divisor) {
-    return (dividend * u16_255) / divisor;
-}
-
-fract8 fractOf(uint32_t dividend, uint32_t divisor) {
-    return (dividend * u32_255) / divisor;
 }
