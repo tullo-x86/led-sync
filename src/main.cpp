@@ -8,14 +8,14 @@
 #include "led_config.h"
 using namespace LED;
 
-#include "RotatingStripesPattern.h"
+#include "WavesOverReef.h"
 #include "DrawState.h"
 
 struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 
-RotatingStripesPattern pattern;
+WavesOverReef pattern;
 
 template<Step STEP>
 inline void beginIndicate() {
@@ -64,6 +64,8 @@ void initLeds()
     // Fill each array with a unique colour
     fill_solid(Array0::Buffer, Array0::Length, CRGB(16, 0, 0));
     fill_solid(Array1::Buffer, Array1::Length, CRGB(0, 16, 0));
+
+    //FastLED.setBrightness(144);
 }
 
 void initNunchuk() {
