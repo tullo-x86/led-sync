@@ -11,7 +11,7 @@ using namespace LED;
 #include "RotatingStripesPattern.h"
 #include "DrawState.h"
 
-struct CRGB frameBuffer[BUFFER_LENGTH];
+struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 
@@ -59,7 +59,7 @@ void initLeds()
     FastLED.addLeds<WS2811, Array1::DataPin, RGB>(Array1::Buffer, Array1::Length).setCorrection(Typical8mmPixel);
 
     // Fill buffer with faint grey
-    fill_solid(frameBuffer, BUFFER_LENGTH, CRGB(8, 8, 8));
+    fill_solid(frameBuffer, LED_BUFFER_LENGTH, CRGB(8, 8, 8));
 
     // Fill each array with a unique colour
     fill_solid(Array0::Buffer, Array0::Length, CRGB(16, 0, 0));
