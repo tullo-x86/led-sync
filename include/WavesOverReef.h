@@ -14,8 +14,11 @@ public:
     void draw(const DrawState &state);
 
 private:
-    static constexpr int16_t PalettePeriodMs = 10000;
-    static constexpr int16_t PaletteSpanPx = 64;
+    static constexpr int16_t BGPalettePeriodMs = 10000;
+    static constexpr int16_t BGPaletteSpanPx = 64;
+
+    static constexpr int16_t FGPalettePeriodMs = 4000;
+    static constexpr int16_t FGPaletteSpanPx = 16;
 };
 
 constexpr uint16_t u16_255 = 0xff;
