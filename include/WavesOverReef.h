@@ -17,8 +17,11 @@ private:
     static constexpr int16_t BGPalettePeriodMs = 10000;
     static constexpr int16_t BGPaletteSpanPx = 64;
 
-    static constexpr int16_t FGPalettePeriodMs = 4000;
-    static constexpr int16_t FGPaletteSpanPx = 16;
+    static constexpr int16_t FG1PalettePeriodMs = 3900;
+    static constexpr int16_t FG1PaletteSpanPx = 16;
+
+    static constexpr int16_t FG2PalettePeriodMs = 2900;
+    static constexpr int16_t FG2PaletteSpanPx = 32;
 };
 
 constexpr uint16_t u16_255 = 0xff;
