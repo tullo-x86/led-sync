@@ -19,10 +19,15 @@ const CRGBPalette16 raysPal(
 );
 
 void WavesOverReef::draw(const DrawState &state) {
-    
     constexpr uint8_t bgVal = 128;
-    constexpr uint8_t fg1Val = 32;
-    constexpr uint8_t fg2Val = 24;
+    constexpr uint8_t fg1Val = 64;
+    constexpr uint8_t fg2Val = 32;
+
+    const uint8_t fg1Array0Val = scale8(fg1Val, 255-state.analog);
+    const uint8_t fg2Array0Val = scale8(fg2Val, 255-state.analog);
+    const uint8_t fg1Array1Val = scale8(fg1Val, state.analog);
+    const uint8_t fg2Array1Val = scale8(fg2Val, state.analog);
+
     uint8_t bgTimePhaseOffset = fractOf(state.tsCurrent, BGPalettePeriodMs);
     uint8_t fg1TimePhaseOffset = fractOf(state.tsCurrent, FG1PalettePeriodMs);
     uint8_t fg2TimePhaseOffset = fractOf(state.tsCurrent, FG2PalettePeriodMs);
@@ -35,13 +40,13 @@ void WavesOverReef::draw(const DrawState &state) {
 
         LED::Array0::Buffer[pos] = 
             ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset, bgVal) +
-            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset, fg1Val) +
-            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset, fg2Val);
+            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset, fg1Array0Val) +
+            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset, fg2Array0Val);
 
         LED::Array1::Buffer[pos] = 
             ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset + BGPaletteSpanPx/2, bgVal) +
-            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Val) +
-            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Val);
+            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) +
+            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Array1Val);
     }
 }
 

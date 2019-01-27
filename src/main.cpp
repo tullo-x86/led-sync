@@ -86,10 +86,9 @@ uint32_t tsLast;
 void loop()
 {
     uint32_t tsNow = millis();
-    uint16_t elapsed = tsNow - tsLast;
-    tsLast = tsNow;
 
     drawState.tsCurrent = tsNow;
+    drawState.analog = 0;
 
     beginIndicate<Step::Render>();
     pattern.draw(drawState);
