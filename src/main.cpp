@@ -88,7 +88,10 @@ void loop()
 {
     uint32_t tsNow = millis();
 
+    //bool success = nunchuk.update();
+
     drawState.tsCurrent = tsNow;
+    //drawState.analog = 255 - cos8(nunchuk.joyX() >> 1);
     drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000));
 
     beginIndicate<Step::Render>();
