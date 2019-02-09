@@ -1,9 +1,6 @@
 #include <Arduino.h>
 
 #include <FastLED.h>
-#include <RadioHead.h>
-#include <RH_RF69.h>
-#include <NintendoExtensionCtrl.h>
 
 #include "led_config.h"
 using namespace LED;
@@ -31,28 +28,7 @@ inline void endIndicate() {
     }
 }
 
-RH_RF69 radio;
-
-// Key must be 16 bytes long:        "0123456789ABCDEF"
-const char *const P_EncKey PROGMEM = "InterrobangKrewe";
-constexpr uint8_t L_EncKey = 16;
-constexpr float RadioFrequency = 915.0;
-
-Nunchuk nunchuk;
-
 DrawState drawState;
-
-void initRadio()
-{
-    radio.init();
-
-    char encryptionKey[L_EncKey];
-    strncpy_P(encryptionKey, P_EncKey, L_EncKey);
-
-    radio.setFrequency(RadioFrequency);
-    radio.setEncryptionKey((uint8_t *)(encryptionKey));
-    radio.setModemConfig(RH_RF69::GFSK_Rb19_2Fd38_4);
-}
 
 void initLeds()
 {
@@ -69,17 +45,9 @@ void initLeds()
     //FastLED.setBrightness(144);
 }
 
-void initNunchuk() {
-    nunchuk.begin();
-
-    nunchuk.connect();
-}
-
 void setup()
 {
-    initRadio();
     initLeds();
-    //initNunchuk();
     pinMode(Indicator::Pin, OUTPUT);
 }
 
@@ -89,7 +57,7 @@ void loop()
     uint32_t tsNow = millis();
 
     drawState.tsCurrent = tsNow;
-    drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000));
+    drawState.analog = 16;
 
     beginIndicate<Step::Render>();
     pattern.draw(drawState);

@@ -6,10 +6,10 @@
 #include "MathUtil.h"
 
 const CHSVPalette16 bgPal(
-    CHSV(128, 255, 255), // HUE_AQUA
+    CHSV(136, 255, 255), // Aqua
     CHSV(144, 180, 255), // Blueish
-    CHSV(116, 160, 255), // Greenish
-    CHSV(128, 255, 255)  // HUE_AQUA
+    CHSV(128, 160, 255), // Cyan
+    CHSV(136, 255, 255)  // Aqua
 );
 
 const CRGBPalette16 raysPal(
@@ -20,7 +20,7 @@ const CRGBPalette16 raysPal(
 );
 
 void WavesOverReef::draw(const DrawState &state) {
-    constexpr uint8_t bgVal = 128;
+    constexpr uint8_t bgVal = 220;
     constexpr uint8_t fg1Val = 64;
     constexpr uint8_t fg2Val = 32;
 

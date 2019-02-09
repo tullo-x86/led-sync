@@ -4,8 +4,8 @@
 
 #include <FastLED.h>
 
-#define ARRAY0_LEDS 128
-#define ARRAY1_LEDS 128
+#define ARRAY0_LEDS 255
+#define ARRAY1_LEDS 255
 
 #define LED_BUFFER_LENGTH (ARRAY0_LEDS + ARRAY1_LEDS)
 
