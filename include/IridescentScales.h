@@ -1,15 +1,15 @@
 //
-// Created by tully on 2019-01-26.
+// Created by tully on 2019-02-04.
 //
 
-#ifndef WAVESOVERREEF_H
-#define WAVESOVERREEF_H
+#ifndef IRIDESCENTSCALES_H
+#define IRIDESCENTSCALES_H
 
 #include "led_config.h"
 #include "lib8tion.h"
 #include "DrawState.h"
 
-class WavesOverReef {
+class IridescentScales {
 public:
     void draw(const DrawState &state);
 
@@ -24,4 +24,4 @@ private:
     static constexpr int16_t FG2PaletteSpanPx = 32;
 };
 
-#endif //WAVESOVERREEF_H
+#endif //IRIDESCENTSCALES_H
