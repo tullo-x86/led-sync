@@ -15,7 +15,9 @@ using namespace LED;
 
 struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
+struct CHSV *Array0::HsvBuffer = reinterpret_cast<CHSV*>(Array0::Buffer);
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
+struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV*>(Array1::Buffer);
 
 IridescentScales pattern;
 

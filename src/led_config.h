@@ -19,6 +19,7 @@ class Array0
     static constexpr uint8_t DataPin = 6;
     static constexpr uint8_t AltDataPin = 8;
     static struct CRGB *Buffer;
+    static struct CHSV *HsvBuffer;
 };
 
 class Array1
@@ -28,6 +29,7 @@ class Array1
     static constexpr uint8_t DataPin = 7;
     static constexpr uint8_t AltDataPin = 9;
     static struct CRGB *Buffer;
+    static struct CHSV *HsvBuffer;
 };
 
 enum class Step

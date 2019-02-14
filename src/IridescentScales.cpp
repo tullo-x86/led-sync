@@ -7,10 +7,10 @@
 
 IridescentScales::IridescentScales()
 : _bgPal(CHSV(180, 255, 255)) {
-    const CHSV c1 = CHSV(235, 110, 210); // i-Pinkish
-    const CHSV c2 = CHSV(118, 105, 206); // i-Greenish
-    const CHSV c3 = CHSV( 39,  90, 235); // i-Gold
-    const CHSV c4 = CHSV(149, 150, 182); // i-Blue
+    const CHSV c1 = CHSV(149, 150, 200); // i-Blue
+    const CHSV c2 = CHSV(235, 110, 210); // i-Salmon
+    const CHSV c3 = CHSV( 39, 135, 235); // i-Gold
+    const CHSV c4 = CHSV(118, 105, 206); // i-Greenish
 
     _bgPal = CHSVPalette16(
         c1, c1, c1, c1,
@@ -46,14 +46,13 @@ void IridescentScales::draw(const DrawState &state) {
         fract8 fg1Pos = fractOf(pos, FG1PaletteSpanPx);
         fract8 fg2Pos = fractOf(pos, FG2PaletteSpanPx);
 
-        LED::Array0::Buffer[pos] = 
-            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal) +
-            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset, fg1Array0Val) +
-            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset, fg2Array0Val);
+        LED::Array0::HsvBuffer[pos] = 
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
 
-        LED::Array1::Buffer[pos] = 
-            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal) +
-            ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) +
-            ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Array1Val);
+        LED::Array1::HsvBuffer[pos] = 
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
     }
+
+    hsv2rgb_rainbow(LED::Array0::HsvBuffer, LED::Array0::Buffer, LED::Array0::Length);
+    hsv2rgb_rainbow(LED::Array1::HsvBuffer, LED::Array1::Buffer, LED::Array1::Length);
 }
