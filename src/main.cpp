@@ -58,6 +58,8 @@ void initLeds()
 {
     FastLED.addLeds<WS2811, Array0::DataPin, RGB>(Array0::Buffer, Array0::Length).setCorrection(Typical8mmPixel);
     FastLED.addLeds<WS2811, Array1::DataPin, RGB>(Array1::Buffer, Array1::Length).setCorrection(Typical8mmPixel);
+    FastLED.addLeds<WS2811, Array0::AltDataPin, RGB>(Array0::Buffer, Array0::Length).setCorrection(Typical8mmPixel);
+    FastLED.addLeds<WS2811, Array1::AltDataPin, RGB>(Array1::Buffer, Array1::Length).setCorrection(Typical8mmPixel);
 
     // Fill buffer with faint grey
     fill_solid(frameBuffer, LED_BUFFER_LENGTH, CRGB(8, 8, 8));

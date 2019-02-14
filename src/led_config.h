@@ -17,6 +17,7 @@ class Array0
   public:
     static constexpr uint8_t Length = ARRAY0_LEDS;
     static constexpr uint8_t DataPin = 6;
+    static constexpr uint8_t AltDataPin = 8;
     static struct CRGB *Buffer;
 };
 
@@ -25,6 +26,7 @@ class Array1
   public:
     static constexpr uint8_t Length = ARRAY1_LEDS;
     static constexpr uint8_t DataPin = 7;
+    static constexpr uint8_t AltDataPin = 9;
     static struct CRGB *Buffer;
 };
 
@@ -43,7 +45,7 @@ class Indicator
   public:
     static constexpr uint8_t Pin = 9;
 
-    static constexpr Step DebugMode = Step::Render;
+    static constexpr Step DebugMode = Step::None;
 };
 
 } // namespace LED
