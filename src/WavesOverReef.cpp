@@ -6,10 +6,10 @@
 #include "MathUtil.h"
 
 const CHSVPalette16 bgPal(
-    CHSV(128, 255, 255), // HUE_AQUA
+    CHSV(136, 255, 255), // HUE_AQUA
     CHSV(144, 180, 255), // Blueish
-    CHSV(116, 160, 255), // Greenish
-    CHSV(128, 255, 255)  // HUE_AQUA
+    CHSV(128, 160, 255), // Greenish
+    CHSV(136, 255, 255)  // Aqua
 );
 
 const CRGBPalette16 raysPal(
