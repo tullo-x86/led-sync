@@ -11,11 +11,16 @@
 
 class IridescentScales {
 public:
+
+    IridescentScales();
+
     void draw(const DrawState &state);
 
 private:
-    static constexpr int16_t BGPalettePeriodMs = 10000;
-    static constexpr int16_t BGPaletteSpanPx = 64;
+    CHSVPalette16 _bgPal;
+
+    static constexpr int16_t BGPalettePeriodMs = 16000;
+    static constexpr int16_t BGPaletteSpanPx = 256;
 
     static constexpr int16_t FG1PalettePeriodMs = 3900;
     static constexpr int16_t FG1PaletteSpanPx = 16;

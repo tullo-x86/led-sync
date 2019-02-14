@@ -5,17 +5,24 @@
 #include "IridescentScales.h"
 #include "MathUtil.h"
 
-const CHSVPalette16 bgPal(
-    CHSV(128, 255, 255), // HUE_AQUA
-    CHSV(144, 180, 255), // Blueish
-    CHSV(116, 160, 255), // Greenish
-    CHSV(128, 255, 255)  // HUE_AQUA
-);
+IridescentScales::IridescentScales()
+: _bgPal(CHSV(180, 255, 255)) {
+    const CHSV c1 = CHSV(235, 110, 210); // i-Pinkish
+    const CHSV c2 = CHSV(118, 105, 206); // i-Greenish
+    const CHSV c3 = CHSV( 39,  90, 235); // i-Gold
+    const CHSV c4 = CHSV(149, 150, 182); // i-Blue
+
+    _bgPal = CHSVPalette16(
+        c1, c1, c1, c1,
+        c2, c2, c2, c2,
+        c3, c3, c3, c3,
+        c4, c4, c4, c4);
+}
 
 const CRGBPalette16 raysPal(
-    CRGB::Grey,     CRGB::White,    CRGB::Grey,     CRGB::Black,
+    CRGB::Black,     CRGB::Black,    CRGB::Black,     CRGB::Black,
     CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black,
-    CRGB::Black,    CRGB::Grey,     CRGB::Grey,     CRGB::Black,
+    CRGB::Black,    CRGB::Black,     CRGB::Black,     CRGB::Black,
     CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black
 );
 
@@ -40,12 +47,12 @@ void IridescentScales::draw(const DrawState &state) {
         fract8 fg2Pos = fractOf(pos, FG2PaletteSpanPx);
 
         LED::Array0::Buffer[pos] = 
-            ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset, bgVal) +
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal) +
             ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset, fg1Array0Val) +
             ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset, fg2Array0Val);
 
         LED::Array1::Buffer[pos] = 
-            ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset + BGPaletteSpanPx/2, bgVal) +
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal) +
             ColorFromPalette(raysPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) +
             ColorFromPalette(raysPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Array1Val);
     }

@@ -9,6 +9,7 @@
 using namespace LED;
 
 #include "WavesOverReef.h"
+#include "IridescentScales.h"
 #include "DrawState.h"
 #include "MathUtil.h"
 
@@ -16,7 +17,7 @@ struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 
-WavesOverReef pattern;
+IridescentScales pattern;
 
 template<Step STEP>
 inline void beginIndicate() {
