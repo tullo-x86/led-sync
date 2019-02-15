@@ -19,38 +19,65 @@ IridescentScales::IridescentScales()
         c4, c4, c4, c4);
 }
 
-const CRGBPalette16 raysPal(
-    CRGB::Black,     CRGB::Black,    CRGB::Black,     CRGB::Black,
-    CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black,
-    CRGB::Black,    CRGB::Black,     CRGB::Black,     CRGB::Black,
-    CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black
-);
-
 void IridescentScales::draw(const DrawState &state) {
     constexpr uint8_t bgVal = 128;
-    constexpr uint8_t fg1Val = 64;
-    constexpr uint8_t fg2Val = 32;
-
-    const uint8_t fg1Array0Val = scale8(fg1Val, 255-state.analog);
-    const uint8_t fg2Array0Val = scale8(fg2Val, 255-state.analog);
-    const uint8_t fg1Array1Val = scale8(fg1Val, state.analog);
-    const uint8_t fg2Array1Val = scale8(fg2Val, state.analog);
 
     uint8_t bgTimePhaseOffset = fractOf(state.tsCurrent, BGPalettePeriodMs);
-    uint8_t fg1TimePhaseOffset = fractOf(state.tsCurrent, FG1PalettePeriodMs);
-    uint8_t fg2TimePhaseOffset = fractOf(state.tsCurrent, FG2PalettePeriodMs);
 
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
         fract8 bgPos = fractOf(pos, BGPaletteSpanPx);
-        fract8 fg1Pos = fractOf(pos, FG1PaletteSpanPx);
-        fract8 fg2Pos = fractOf(pos, FG2PaletteSpanPx);
 
         LED::Array0::HsvBuffer[pos] = 
             ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
 
         LED::Array1::HsvBuffer[pos] = 
             ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
+    }
+
+    bool isCharging = (state.tsPulled > state.tsReleased);
+
+    uint32_t duration = isCharging
+        ? (state.tsCurrent - state.tsPulled)      // Charging
+        : (state.tsReleased - state.tsPulled);    // Discharging
+
+    // How big is the flash?
+    uint8_t flashLength = 5;//max(duration / FlashHoldMsPerPxLength, LED::Array0::Length);
+
+    // How far can the flash travel?
+    const uint32_t flash0MaxPos = LED::Array0::Length - flashLength;
+    const uint32_t flash1MaxPos = LED::Array1::Length - flashLength;
+
+    int32_t flash0Pos = -1;
+    int32_t flash1Pos = -1;
+
+    // Where is the flash right now?
+    const uint32_t flashPxMovedSinceRelease = isCharging ? 0 : (state.tsCurrent - state.tsReleased) / FlashTravelMsPerPx;
+    if (flashPxMovedSinceRelease < flash0MaxPos) {
+        flash0Pos = flashPxMovedSinceRelease;
+    }
+    else if (flashPxMovedSinceRelease < flash0MaxPos * 2) {
+        flash0Pos = flash0MaxPos * 2 - flashPxMovedSinceRelease;
+    }
+
+    if (flashPxMovedSinceRelease < flash1MaxPos) {
+        flash1Pos = flashPxMovedSinceRelease;
+    }
+    else if (flashPxMovedSinceRelease < flash1MaxPos * 2) {
+        flash1Pos = flash1MaxPos * 2 - flashPxMovedSinceRelease;
+    }
+
+    for(uint8_t i = 0; i < flashLength; i++)
+    {
+        if (flash0Pos != -1 && flash0Pos < LED::Array0::Length) {
+            LED::Array0::HsvBuffer[flash0Pos + i].s = 255;
+            LED::Array0::HsvBuffer[flash0Pos + i].v = 255;
+        }
+
+        if (flash1Pos != -1 && flash1Pos < LED::Array1::Length) {
+            LED::Array1::HsvBuffer[flash1Pos + i].s = 255;
+            LED::Array1::HsvBuffer[flash1Pos + i].v = 255;
+        }
     }
 
     hsv2rgb_rainbow(LED::Array0::HsvBuffer, LED::Array0::Buffer, LED::Array0::Length);

@@ -22,11 +22,8 @@ private:
     static constexpr int16_t BGPalettePeriodMs = 16000;
     static constexpr int16_t BGPaletteSpanPx = 256;
 
-    static constexpr int16_t FG1PalettePeriodMs = 3900;
-    static constexpr int16_t FG1PaletteSpanPx = 16;
-
-    static constexpr int16_t FG2PalettePeriodMs = 2900;
-    static constexpr int16_t FG2PaletteSpanPx = 32;
+    static constexpr int32_t FlashHoldMsPerPxLength = 80;
+    static constexpr int32_t FlashTravelMsPerPx = 5;
 };
 
 #endif //IRIDESCENTSCALES_H
