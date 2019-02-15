@@ -22,19 +22,22 @@ IridescentScales::IridescentScales()
 
 void IridescentScales::draw(const DrawState &state)
 {
-    constexpr uint8_t bgVal = 128;
+    constexpr uint8_t bgVal = 112;
 
     uint8_t bgTimePhaseOffset = fractOf(state.tsCurrent, BGPalettePeriodMs);
+
+    const uint8_t valAdj0 = scale8(32, 255-state.analog);
+    const uint8_t valAdj1 = scale8(32, state.analog);
 
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
         fract8 bgPos = fractOf(pos, BGPaletteSpanPx);
 
         LED::Array0::HsvBuffer[pos] =
-            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal + valAdj0);
 
         LED::Array1::HsvBuffer[pos] =
-            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal);
+            ColorFromPalette(_bgPal, bgPos + bgTimePhaseOffset, bgVal + valAdj1);
     }
 
     bool isCharging = (state.tsPulled > state.tsReleased);
@@ -80,14 +83,14 @@ void IridescentScales::draw(const DrawState &state)
         {
             if (flash0Pos != -1 && flash0Pos < LED::Array0::Length)
             {
-                LED::Array0::HsvBuffer[flash0Pos + i].s = 255;
-                LED::Array0::HsvBuffer[flash0Pos + i].v = 255;
+                LED::Array0::HsvBuffer[flash0Pos + i].s += 64;
+                LED::Array0::HsvBuffer[flash0Pos + i].v += 96;
             }
 
             if (flash1Pos != -1 && flash1Pos < LED::Array1::Length)
             {
-                LED::Array1::HsvBuffer[flash1Pos + i].s = 255;
-                LED::Array1::HsvBuffer[flash1Pos + i].v = 255;
+                LED::Array1::HsvBuffer[flash1Pos + i].s += 64;
+                LED::Array1::HsvBuffer[flash1Pos + i].v += 96;
             }
         }
     }
