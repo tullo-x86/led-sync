@@ -21,7 +21,8 @@ struct CHSV *Array0::HsvBuffer = reinterpret_cast<CHSV *>(Array0::Buffer);
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV *>(Array1::Buffer);
 
-WavesOverReef pattern;
+WavesOverReef pattern0;
+IridescentScales pattern1;
 
 template <Step STEP>
 inline void beginIndicate()
@@ -43,7 +44,7 @@ inline void endIndicate()
 RH_RF69 radio;
 
 // Key must be 16 bytes long:        "0123456789ABCDEF"
-const char *const P_EncKey PROGMEM = "InterrobangKrewe";
+const char *const P_EncKey         = "InterrobangKrewe";
 constexpr uint8_t L_EncKey = 16;
 constexpr float RadioFrequency = 915.0;
 
@@ -63,11 +64,8 @@ void initRadio()
     txBuffer = reinterpret_cast<uint8_t*>(&message);
     rxBuffer = reinterpret_cast<uint8_t*>(&message);
 
-    char encryptionKey[L_EncKey];
-    strncpy_P(encryptionKey, P_EncKey, L_EncKey);
-
     radio.setFrequency(RadioFrequency);
-    radio.setEncryptionKey((uint8_t *)(encryptionKey));
+    radio.setEncryptionKey((uint8_t *)(P_EncKey));
     radio.setModemConfig(RH_RF69::GFSK_Rb19_2Fd38_4);
 }
 
@@ -142,6 +140,7 @@ void loop()
         {
             importantUpdateThisFrame = true;
             message.idxPattern++;
+            message.idxPattern %= 3;
         }
 
         patternChangeWasDown = nunchuk.buttonC();
@@ -155,6 +154,7 @@ void loop()
         if (shouldBroadcast)
         {
             radio.send(txBuffer, RadioMessage::Size());
+            radio.waitPacketSent();
             tsLastTransmission = tsNow;
         }
     }
@@ -174,7 +174,23 @@ void loop()
     drawState.analog = message.analog;
 
     beginIndicate<Step::Render>();
-    pattern.draw(drawState);
+    
+    switch (message.idxPattern)
+    {
+        case 0:
+            pattern0.draw(drawState);
+            break;
+    
+        case 1:
+            pattern1.draw(drawState);
+            break;
+        
+        default:
+            fill_solid(Array0::Buffer, Array0::Length, CRGB::Black);
+            fill_solid(Array1::Buffer, Array1::Length, CRGB::Black);
+            break;
+    }
+
     endIndicate<Step::Render>();
 
     if (tsLastTransmission == tsNow) {
