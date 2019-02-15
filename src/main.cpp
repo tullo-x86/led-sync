@@ -193,13 +193,13 @@ void loop()
 
     endIndicate<Step::Render>();
 
-    if (tsLastTransmission == tsNow) {
-        Array0::Buffer[0] += CRGB(255,0,0);
-    }
+    // if (tsLastTransmission == tsNow) {
+    //     Array0::Buffer[0] += CRGB(255,0,0);
+    // }
     
-    if (recvd) {
-        Array0::Buffer[0] += CRGB(0,0,255);
-    }
+    // if (recvd) {
+    //     Array0::Buffer[0] += CRGB(0,0,255);
+    // }
 
     beginIndicate<Step::Present>();
     FastLED.show();
