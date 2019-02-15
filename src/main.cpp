@@ -13,23 +13,29 @@ using namespace LED;
 #include "DrawState.h"
 #include "MathUtil.h"
 
+#include "RadioMesage.h"
+
 struct CRGB frameBuffer[LED_BUFFER_LENGTH];
 struct CRGB *Array0::Buffer = frameBuffer;
-struct CHSV *Array0::HsvBuffer = reinterpret_cast<CHSV*>(Array0::Buffer);
+struct CHSV *Array0::HsvBuffer = reinterpret_cast<CHSV *>(Array0::Buffer);
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
-struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV*>(Array1::Buffer);
+struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV *>(Array1::Buffer);
 
-IridescentScales pattern;
+WavesOverReef pattern;
 
-template<Step STEP>
-inline void beginIndicate() {
-    if (Indicator::DebugMode == STEP) {
+template <Step STEP>
+inline void beginIndicate()
+{
+    if (Indicator::DebugMode == STEP)
+    {
         digitalWrite(Indicator::Pin, HIGH);
     }
 }
-template<Step STEP>
-inline void endIndicate() {
-    if (Indicator::DebugMode == STEP) {
+template <Step STEP>
+inline void endIndicate()
+{
+    if (Indicator::DebugMode == STEP)
+    {
         digitalWrite(Indicator::Pin, LOW);
     }
 }
@@ -41,6 +47,11 @@ const char *const P_EncKey PROGMEM = "InterrobangKrewe";
 constexpr uint8_t L_EncKey = 16;
 constexpr float RadioFrequency = 915.0;
 
+uint8_t *txBuffer;
+uint8_t *rxBuffer;
+uint8_t incomingPacketLength;
+RadioMessage message;
+
 Nunchuk nunchuk;
 
 DrawState drawState;
@@ -48,6 +59,9 @@ DrawState drawState;
 void initRadio()
 {
     radio.init();
+
+    txBuffer = reinterpret_cast<uint8_t*>(&message);
+    rxBuffer = reinterpret_cast<uint8_t*>(&message);
 
     char encryptionKey[L_EncKey];
     strncpy_P(encryptionKey, P_EncKey, L_EncKey);
@@ -74,34 +88,99 @@ void initLeds()
     //FastLED.setBrightness(144);
 }
 
-void initNunchuk() {
+void initNunchuk()
+{
     nunchuk.begin();
 
     nunchuk.connect();
 }
 
+uint32_t tsLastTransmission;
+const uint32_t TransmitIntervalMs = 80;
+uint32_t tsLastFrame;
+
 void setup()
 {
     initRadio();
     initLeds();
-    //initNunchuk();
-    pinMode(Indicator::Pin, OUTPUT);
+    initNunchuk();
+    //pinMode(Indicator::Pin, OUTPUT);
+    tsLastTransmission = millis();
 }
 
-uint32_t tsLast;
+bool triggerWasDown = false;
+bool patternChangeWasDown = false;
+
 void loop()
 {
     uint32_t tsNow = millis();
+    uint32_t elapsed = tsNow - tsLastFrame;
+    tsLastFrame = tsNow;
 
-    //bool success = nunchuk.update();
+    bool thisIsMasterUnit = nunchuk.update();
+    bool recvd = false;
 
-    drawState.tsCurrent = tsNow;
-    //drawState.analog = 255 - cos8(nunchuk.joyX() >> 1);
-    drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000));
+    if (thisIsMasterUnit)
+    {
+        message.tsNow = tsNow;
+        bool importantUpdateThisFrame = false;
+
+        if (!triggerWasDown && nunchuk.buttonZ())
+        {
+            importantUpdateThisFrame = true;
+            message.tsPulled = tsNow;
+        }
+        else if (triggerWasDown && !nunchuk.buttonZ())
+        {
+            importantUpdateThisFrame = true;
+            message.tsReleased = tsNow;
+        }
+
+        if (!patternChangeWasDown && nunchuk.buttonC())
+        {
+            importantUpdateThisFrame = true;
+            message.idxPattern++;
+        }
+
+        //drawState.analog = 0; // For demo
+        message.analog = nunchuk.joyX(); // For "Ankey" controllers which max out early
+        //drawState.analog = 255 - cos8(nunchuk.joyX() >> 1); // For genuine Nintendo controllers
+        //drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000)); // For demo
+
+        bool shouldBroadcast = importantUpdateThisFrame || (tsNow - tsLastTransmission) > TransmitIntervalMs;
+        if (shouldBroadcast)
+        {
+            radio.send(txBuffer, RadioMessage::Size());
+            tsLastTransmission = tsNow;
+        }
+    }
+    else
+    {
+        uint8_t incomingPacketLength = RadioMessage::Size();
+        if (radio.recv(rxBuffer, &incomingPacketLength)) {
+            recvd = true;
+        } else {
+            message.tsNow += elapsed;
+        }
+    }
+
+    drawState.tsCurrent = message.tsNow;
+    drawState.tsPulled = message.tsPulled;
+    drawState.tsReleased = message.tsReleased;
+    drawState.analog = message.analog;
 
     beginIndicate<Step::Render>();
     pattern.draw(drawState);
     endIndicate<Step::Render>();
+
+    if (tsLastTransmission == tsNow) {
+        Array0::Buffer[0] += CRGB(255,0,0);
+    }
+    
+    if (recvd) {
+        Array0::Buffer[0] += CRGB(0,0,255);
+    }
+    
 
     beginIndicate<Step::Present>();
     FastLED.show();
