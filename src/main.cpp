@@ -129,11 +129,13 @@ void loop()
         {
             importantUpdateThisFrame = true;
             message.tsPulled = tsNow;
+            triggerWasDown = true;
         }
         else if (triggerWasDown && !nunchuk.buttonZ())
         {
             importantUpdateThisFrame = true;
             message.tsReleased = tsNow;
+            triggerWasDown = false;
         }
 
         if (!patternChangeWasDown && nunchuk.buttonC())
@@ -141,6 +143,8 @@ void loop()
             importantUpdateThisFrame = true;
             message.idxPattern++;
         }
+
+        patternChangeWasDown = nunchuk.buttonC();
 
         //drawState.analog = 0; // For demo
         message.analog = nunchuk.joyX(); // For "Ankey" controllers which max out early
@@ -180,7 +184,6 @@ void loop()
     if (recvd) {
         Array0::Buffer[0] += CRGB(0,0,255);
     }
-    
 
     beginIndicate<Step::Present>();
     FastLED.show();
