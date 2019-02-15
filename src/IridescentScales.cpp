@@ -22,12 +22,12 @@ IridescentScales::IridescentScales()
 
 void IridescentScales::draw(const DrawState &state)
 {
-    constexpr uint8_t bgVal = 112;
+    constexpr uint8_t bgVal = 96;
 
     uint8_t bgTimePhaseOffset = fractOf(state.tsCurrent, BGPalettePeriodMs);
 
-    const uint8_t valAdj0 = scale8(32, 255-state.analog);
-    const uint8_t valAdj1 = scale8(32, state.analog);
+    const uint8_t valAdj0 = scale8(64, 255-state.analog);
+    const uint8_t valAdj1 = scale8(64, state.analog);
 
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
