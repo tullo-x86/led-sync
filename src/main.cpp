@@ -24,6 +24,14 @@ struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV *>(Array1::Buffer);
 WavesOverReef pattern0;
 IridescentScales pattern1;
 
+inline void initIndicator()
+{
+    if (Indicator::DebugMode != LED::Step::None) 
+    {
+        pinMode(Indicator::Pin, OUTPUT);
+    }
+}
+
 template <Step STEP>
 inline void beginIndicate()
 {
@@ -95,15 +103,18 @@ void initNunchuk()
 
 uint32_t tsLastTransmission;
 const uint32_t TransmitIntervalMs = 80;
-uint32_t tsLastFrame;
+uint32_t millisLastFrame;
+uint32_t microsLastFrame;
 
 void setup()
 {
     initRadio();
     initLeds();
     initNunchuk();
-    //pinMode(Indicator::Pin, OUTPUT);
+    initIndicator();
     tsLastTransmission = millis();
+    microsLastFrame = micros();
+    message.tScale = 128;
 }
 
 bool triggerWasDown = false;
@@ -111,26 +122,32 @@ bool patternChangeWasDown = false;
 
 void loop()
 {
-    const uint32_t tsNow = millis();
-    const uint32_t elapsed = tsNow - tsLastFrame;
-    tsLastFrame = tsNow;
+    const uint32_t microsNow = micros();
+    const uint32_t microsElapsed = microsNow - microsLastFrame;
+    microsLastFrame = microsNow;
+
+    const uint8_t TIMESCALE_FACTOR = message.tScale;
+
+    const uint32_t millisElapsed = (microsElapsed * TIMESCALE_FACTOR) >> (10 + 7);
+    const uint32_t millisNow = millisLastFrame + millisElapsed;
+    millisLastFrame = millisNow;
 
     const bool thisIsMasterUnit = nunchuk.update();
     if (thisIsMasterUnit)
     {
-        message.tsNow = tsNow;
+        message.tsNow = millisNow;
         bool importantUpdateThisFrame = false;
 
         if (!triggerWasDown && nunchuk.buttonZ())
         {
             importantUpdateThisFrame = true;
-            message.tsPulled = tsNow;
+            message.tsPulled = millisNow;
             triggerWasDown = true;
         }
         else if (triggerWasDown && !nunchuk.buttonZ())
         {
             importantUpdateThisFrame = true;
-            message.tsReleased = tsNow;
+            message.tsReleased = millisNow;
             triggerWasDown = false;
         }
 
@@ -148,13 +165,16 @@ void loop()
         //drawState.analog = 255 - cos8(nunchuk.joyX() >> 1); // For genuine Nintendo controllers
         //drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000)); // For demo
 
-        const bool shouldBroadcast = importantUpdateThisFrame || (tsNow - tsLastTransmission) > TransmitIntervalMs;
+        message.tScale = nunchuk.joyY();
+
+        uint32_t realMillisNow = millis();
+        const bool shouldBroadcast = importantUpdateThisFrame || (realMillisNow - tsLastTransmission) > TransmitIntervalMs;
         if (shouldBroadcast)
         {
             beginIndicate<Step::RadioTx>();
             radio.send(txBuffer, RadioMessage::Size());
             radio.waitPacketSent();
-            tsLastTransmission = tsNow;
+            tsLastTransmission = realMillisNow;
             beginIndicate<Step::RadioTx>();
         }
     }
@@ -165,7 +185,7 @@ void loop()
         if (radio.recv(rxBuffer, &incomingPacketLength)) {
             // noop
         } else {
-            message.tsNow += elapsed;
+            message.tsNow += millisElapsed;
         }
         beginIndicate<Step::RadioRx>();
     }
