@@ -27,6 +27,6 @@ union RadioMessage
 
     uint8_t raw[sizeof(uint32_t) * 4 + sizeof(uint8_t) * 2];
 
-    static size_t Size() { return sizeof(RadioMessage); }
+    static constexpr size_t Size() { return sizeof(RadioMessage); }
 };
 

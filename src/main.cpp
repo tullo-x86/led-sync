@@ -111,13 +111,11 @@ bool patternChangeWasDown = false;
 
 void loop()
 {
-    uint32_t tsNow = millis();
-    uint32_t elapsed = tsNow - tsLastFrame;
+    const uint32_t tsNow = millis();
+    const uint32_t elapsed = tsNow - tsLastFrame;
     tsLastFrame = tsNow;
 
-    bool thisIsMasterUnit = nunchuk.update();
-    bool recvd = false;
-
+    const bool thisIsMasterUnit = nunchuk.update();
     if (thisIsMasterUnit)
     {
         message.tsNow = tsNow;
@@ -150,22 +148,26 @@ void loop()
         //drawState.analog = 255 - cos8(nunchuk.joyX() >> 1); // For genuine Nintendo controllers
         //drawState.analog = sin8(fractOf(drawState.tsCurrent, 20000)); // For demo
 
-        bool shouldBroadcast = importantUpdateThisFrame || (tsNow - tsLastTransmission) > TransmitIntervalMs;
+        const bool shouldBroadcast = importantUpdateThisFrame || (tsNow - tsLastTransmission) > TransmitIntervalMs;
         if (shouldBroadcast)
         {
+            beginIndicate<Step::RadioTx>();
             radio.send(txBuffer, RadioMessage::Size());
             radio.waitPacketSent();
             tsLastTransmission = tsNow;
+            beginIndicate<Step::RadioTx>();
         }
     }
     else
     {
+        beginIndicate<Step::RadioRx>();
         uint8_t incomingPacketLength = RadioMessage::Size();
         if (radio.recv(rxBuffer, &incomingPacketLength)) {
-            recvd = true;
+            // noop
         } else {
             message.tsNow += elapsed;
         }
+        beginIndicate<Step::RadioRx>();
     }
 
     drawState.tsCurrent = message.tsNow;
@@ -174,7 +176,6 @@ void loop()
     drawState.analog = message.analog;
 
     beginIndicate<Step::Render>();
-    
     switch (message.idxPattern)
     {
         case 0:
@@ -190,16 +191,7 @@ void loop()
             fill_solid(Array1::Buffer, Array1::Length, CRGB::Black);
             break;
     }
-
     endIndicate<Step::Render>();
-
-    // if (tsLastTransmission == tsNow) {
-    //     Array0::Buffer[0] += CRGB(255,0,0);
-    // }
-    
-    // if (recvd) {
-    //     Array0::Buffer[0] += CRGB(0,0,255);
-    // }
 
     beginIndicate<Step::Present>();
     FastLED.show();
