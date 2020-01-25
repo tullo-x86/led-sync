@@ -8,7 +8,7 @@
 #include "led_config.h"
 using namespace LED;
 
-#include "WavesOverReef.h"
+#include "ShadowsInTheForest.h"
 #include "IridescentScales.h"
 #include "DrawState.h"
 #include "MathUtil.h"
@@ -21,7 +21,7 @@ struct CHSV *Array0::HsvBuffer = reinterpret_cast<CHSV *>(Array0::Buffer);
 struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV *>(Array1::Buffer);
 
-WavesOverReef pattern0;
+ShadowsInTheForest pattern0;
 IridescentScales pattern1;
 
 inline void initIndicator()
