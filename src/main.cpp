@@ -9,7 +9,7 @@
 using namespace LED;
 
 #include "ShadowsInTheForest.h"
-#include "IridescentScales.h"
+#include "ColorPairs.h"
 #include "DrawState.h"
 #include "MathUtil.h"
 
@@ -22,7 +22,7 @@ struct CRGB *Array1::Buffer = frameBuffer + Array0::Length;
 struct CHSV *Array1::HsvBuffer = reinterpret_cast<CHSV *>(Array1::Buffer);
 
 ShadowsInTheForest pattern0;
-IridescentScales pattern1;
+ColorPairs pattern1;
 
 inline void initIndicator()
 {
