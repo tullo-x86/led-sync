@@ -175,7 +175,7 @@ void loop()
             radio.send(txBuffer, RadioMessage::Size());
             radio.waitPacketSent();
             tsLastTransmission = realMillisNow;
-            beginIndicate<Step::RadioTx>();
+            endIndicate<Step::RadioTx>();
         }
     }
     else
@@ -187,7 +187,7 @@ void loop()
         } else {
             message.tsNow += millisElapsed;
         }
-        beginIndicate<Step::RadioRx>();
+        endIndicate<Step::RadioRx>();
     }
 
     drawState.tsCurrent = message.tsNow;
