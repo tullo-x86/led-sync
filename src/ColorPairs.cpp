@@ -6,6 +6,10 @@ ColorPairs::ColorPairs()
     //
 }
 
+// index: Pixel index
+// phaseOffset (fract): Time offset for animation
+// pulseWidth (fract): Width of whole animation loop
+// transitionWidth (fract): Width of ease between light/dark. More = smooth. Less = sharp.
 uint8_t mask(uint16_t index, int16_t phaseOffset, int16_t pulseWidth, int16_t transitionWidth) {
 
     int32_t theta = (phaseOffset + index * 256) % pulseWidth;
@@ -32,9 +36,11 @@ void ColorPairs::draw(const DrawState &state)
 {
     const uint8_t baseHue = fractOf(state.tsCurrent, HuePeriodMs);
 
+    const int16_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
+
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
-        uint8_t maskVal = scale8(255, mask(pos, 0, MaskPulseWidthFract, MaskTransitionWidthFract));
+        uint8_t maskVal = scale8(255, mask(pos, -maskOffsetFract, MaskLoopWidthFract, MaskTransitionWidthFract));
 
         LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, maskVal);
         LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, maskVal);
