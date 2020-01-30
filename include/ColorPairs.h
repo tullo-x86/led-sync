@@ -21,10 +21,6 @@ private:
     static constexpr int16_t MaskLoopWidthFract = 127 << 8;
     static constexpr int16_t MaskTransitionWidthFract = 16 << 8;
     static constexpr int16_t MaskPeriodMs = 1000;
-
-    static constexpr int16_t WaveLoopWidthFract = 16 << 8;
-    static constexpr int16_t WaveTransitionWidthFract = 1 << 8;
-    static constexpr int16_t WavePeriodMs = 4000;
 };
 
 #endif //COLORPAIRS_H

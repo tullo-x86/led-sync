@@ -36,19 +36,17 @@ void ColorPairs::draw(const DrawState &state)
 {
     const uint8_t baseHue = fractOf(state.tsCurrent, HuePeriodMs);
 
-    const int32_t waveOffsetFract = (state.tsCurrent % WavePeriodMs) * WaveLoopWidthFract / WavePeriodMs;
     const int32_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
 
-    const uint8_t waveVal = mask(128, waveOffsetFract, WaveLoopWidthFract, WaveTransitionWidthFract);
-    const uint8_t channel0Wave = qsub8(waveVal, 128) * 2;
-    const uint8_t channel1Wave = 255 - (qadd8(waveVal, 128) - 128) * 2;
+    const uint8_t val0Base = qsub8(state.analog, 128) * 2;
+    const uint8_t val1Base = 255 - (qadd8(state.analog, 128) - 128) * 2;
 
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
         uint8_t maskVal = mask(pos, -maskOffsetFract, MaskLoopWidthFract, MaskTransitionWidthFract);
 
-        LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(channel0Wave, maskVal));
-        LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(channel1Wave, maskVal));
+        LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(val0Base, maskVal));
+        LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(val1Base, maskVal));
     }
 
     hsv2rgb_rainbow(LED::Array0::HsvBuffer, LED::Array0::Buffer, LED::Array0::Length);
