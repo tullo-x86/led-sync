@@ -18,9 +18,11 @@ public:
 private:
     static constexpr uint32_t HuePeriodMs = 30000;
 
-    static constexpr int16_t MaskLoopWidthFract = 127 << 8;
-    static constexpr int16_t MaskTransitionWidthFract = 16 << 8;
+    static constexpr int16_t MaskLoopWidthFract = 32 << 8;
+    static constexpr int16_t MaskTransitionWidthFract = 4 << 8;
     static constexpr int16_t MaskPeriodMs = 1000;
+
+    static constexpr int32_t FadeDurationMs = 255;
 };
 
 #endif //COLORPAIRS_H
