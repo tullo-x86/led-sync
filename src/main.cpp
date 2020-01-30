@@ -155,7 +155,7 @@ void loop()
         {
             importantUpdateThisFrame = true;
             message.idxPattern++;
-            message.idxPattern %= 3;
+            message.idxPattern %= 2;
         }
 
         patternChangeWasDown = nunchuk.buttonC();
