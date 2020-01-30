@@ -36,10 +36,10 @@ void ColorPairs::draw(const DrawState &state)
 {
     const uint8_t baseHue = fractOf(state.tsCurrent, HuePeriodMs);
 
-    const int16_t waveOffsetFract = (state.tsCurrent % WavePeriodMs) * WaveLoopWidthFract / WavePeriodMs;
-    const int16_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
+    const int32_t waveOffsetFract = (state.tsCurrent % WavePeriodMs) * WaveLoopWidthFract / WavePeriodMs;
+    const int32_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
 
-    const uint8_t waveVal = mask(0, -waveOffsetFract, WaveLoopWidthFract, WaveTransitionWidthFract);
+    const uint8_t waveVal = mask(128, waveOffsetFract, WaveLoopWidthFract, WaveTransitionWidthFract);
     const uint8_t channel0Wave = qsub8(waveVal, 128) * 2;
     const uint8_t channel1Wave = 255 - (qadd8(waveVal, 128) - 128) * 2;
 

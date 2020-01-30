@@ -16,14 +16,14 @@ public:
     void draw(const DrawState &state);
 
 private:
-    static constexpr int16_t HuePeriodMs = 16000;
+    static constexpr uint32_t HuePeriodMs = 30000;
 
-    static constexpr int16_t MaskLoopWidthFract = 16 << 8;
-    static constexpr int16_t MaskTransitionWidthFract = 7 << 8;
-    static constexpr int16_t MaskPeriodMs = 1300;
+    static constexpr int16_t MaskLoopWidthFract = 127 << 8;
+    static constexpr int16_t MaskTransitionWidthFract = 16 << 8;
+    static constexpr int16_t MaskPeriodMs = 1000;
 
     static constexpr int16_t WaveLoopWidthFract = 16 << 8;
-    static constexpr int16_t WaveTransitionWidthFract = 2 << 8;
+    static constexpr int16_t WaveTransitionWidthFract = 1 << 8;
     static constexpr int16_t WavePeriodMs = 4000;
 };
 
