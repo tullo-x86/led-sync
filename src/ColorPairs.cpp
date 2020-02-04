@@ -48,7 +48,7 @@ void ColorPairs::draw(const DrawState &state)
         : (state.tsCurrent - state.tsReleased); // Fade-out
 
     uint8_t fadeAmt = 0;
-    if (isCharging)
+    if (!isCharging)
     {
         fadeAmt = min(255, sinceTriggerChange * 255 / FadeDurationMs);
     }
