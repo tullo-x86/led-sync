@@ -13,10 +13,10 @@ const CHSVPalette16 bgPal(
 );
 
 const CRGBPalette16 shadowsPal(
-    CRGB::Grey,     CRGB::White,    CRGB::Grey,     CRGB::Black,
+    CRGB::Grey,     CRGB::White,    CRGB::Black,    CRGB::Black,
     CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black,
-    CRGB::Black,    CRGB::Grey,     CRGB::White,    CRGB::Black,
-    CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black
+    CRGB::Black,    CRGB::Grey,     CRGB::Black,    CRGB::Black,
+    CRGB::Black,    CRGB::Black,    CRGB::Grey,     CRGB::Black
 );
 
 void ShadowsInTheForest::draw(const DrawState &state) {
