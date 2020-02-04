@@ -18,13 +18,17 @@ public:
 private:
     static constexpr uint32_t HuePeriodMs = 30000;
 
-    static constexpr int16_t MaskLoopWidthFract = 64 << 8;
-    static constexpr int16_t MaskTransitionWidthFract = 4 << 8;
-    static constexpr int16_t MaskPeriodMs = 2000;
+    static constexpr int16_t Mask1LoopWidthFract = 64 << 8;
+    static constexpr int16_t Mask1TransitionWidthFract = 4 << 8;
+    static constexpr int16_t Mask1PeriodMs = 2000;
 
     static constexpr int16_t Mask2LoopWidthFract = 16 << 8;
     static constexpr int16_t Mask2TransitionWidthFract = 1 << 8;
     static constexpr int16_t Mask2PeriodMs = 500;
+
+    static constexpr int16_t Mask3LoopWidthFract = 8 << 8;
+    static constexpr int16_t Mask3TransitionWidthFract = 2 << 8;
+    static constexpr int16_t Mask3PeriodMs = 800;
 
     static constexpr int32_t FadeDurationMs = 255;
 };

@@ -36,8 +36,9 @@ void ColorPairs::draw(const DrawState &state)
 {
     const uint8_t baseHue = fractOf(state.tsCurrent, HuePeriodMs);
 
-    const int32_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
+    const int32_t mask1OffsetFract = (state.tsCurrent % Mask1PeriodMs) * Mask1LoopWidthFract / Mask1PeriodMs;
     const int32_t mask2OffsetFract = (state.tsCurrent % Mask2PeriodMs) * Mask2LoopWidthFract / Mask2PeriodMs;
+    const int32_t mask3OffsetFract = (state.tsCurrent % Mask3PeriodMs) * Mask3LoopWidthFract / Mask3PeriodMs;
 
     // TODO: Make this "split L/R" generic
     const uint8_t val0Base = qsub8(state.analog, 128) * 2;
@@ -60,11 +61,15 @@ void ColorPairs::draw(const DrawState &state)
 
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
-        uint8_t maskVal = mask(pos, -maskOffsetFract, MaskLoopWidthFract, MaskTransitionWidthFract);
-        maskVal = scale8(maskVal, qadd8(64, mask(pos, -mask2OffsetFract, Mask2LoopWidthFract, Mask2TransitionWidthFract)));
+        const uint8_t mask1Val0 = mask(pos, -mask1OffsetFract, Mask1LoopWidthFract, Mask1TransitionWidthFract);
+        const uint8_t mask1Val1 = mask(pos, (Mask1LoopWidthFract/2) - mask1OffsetFract, Mask1LoopWidthFract, Mask1TransitionWidthFract);
+        const uint8_t mask2Val = mask(pos, mask2OffsetFract, Mask2LoopWidthFract, Mask2TransitionWidthFract);
+        const uint8_t mask3Val = mask(pos, mask3OffsetFract, Mask3LoopWidthFract, Mask3TransitionWidthFract);
+        const uint8_t maskVal0 = scale8(mask1Val0, qadd8(64, scale8(mask2Val, mask3Val)));
+        const uint8_t maskVal1 = scale8(mask1Val1, qadd8(64, scale8(mask2Val, mask3Val)));
 
-        LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(maskVal, qadd8(val0Base, fadeAmt)));
-        LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(maskVal, qadd8(val1Base, fadeAmt)));
+        LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(maskVal0, qadd8(val0Base, fadeAmt)));
+        LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(maskVal1, qadd8(val1Base, fadeAmt)));
     }
 
     hsv2rgb_rainbow(LED::Array0::HsvBuffer, LED::Array0::Buffer, LED::Array0::Length);
