@@ -6,10 +6,10 @@
 #include "MathUtil.h"
 
 const CHSVPalette16 bgPal(
-    CHSV(96, 255, 255), // Yellowish
-    CHSV(80, 180, 255), // Yellow
-    CHSV(112, 160, 255), // Greenish
-    CHSV(96, 255, 255)  // Yellowish
+    CHSV( 96, 160, 255), // White-yellowish
+    CHSV( 80, 192, 255), // Yellow
+    CHSV(112, 192, 192), // Deeper green
+    CHSV( 96, 255, 255)  // Yellowish
 );
 
 const CRGBPalette16 shadowsPal(
