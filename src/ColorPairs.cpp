@@ -37,6 +37,7 @@ void ColorPairs::draw(const DrawState &state)
     const uint8_t baseHue = fractOf(state.tsCurrent, HuePeriodMs);
 
     const int32_t maskOffsetFract = (state.tsCurrent % MaskPeriodMs) * MaskLoopWidthFract / MaskPeriodMs;
+    const int32_t mask2OffsetFract = (state.tsCurrent % Mask2PeriodMs) * Mask2LoopWidthFract / Mask2PeriodMs;
 
     // TODO: Make this "split L/R" generic
     const uint8_t val0Base = qsub8(state.analog, 128) * 2;
@@ -60,6 +61,7 @@ void ColorPairs::draw(const DrawState &state)
     for (uint16_t pos = 0; pos < LED::Array0::Length; pos++)
     {
         uint8_t maskVal = mask(pos, -maskOffsetFract, MaskLoopWidthFract, MaskTransitionWidthFract);
+        maskVal = scale8(maskVal, qadd8(64, mask(pos, -mask2OffsetFract, Mask2LoopWidthFract, Mask2TransitionWidthFract)));
 
         LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(maskVal, qadd8(val0Base, fadeAmt)));
         LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(maskVal, qadd8(val1Base, fadeAmt)));
