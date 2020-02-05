@@ -16,15 +16,15 @@ uint8_t mask(uint16_t index, int16_t phaseOffset, int16_t pulseWidth, int16_t tr
 
     if (theta < transitionWidth) {
         // Phase 1 - upward
-        return ease8InOutQuad(theta * 255 / transitionWidth);
+        return ease8InOutQuad((theta << 8) / transitionWidth);
     }
-    else if (theta < pulseWidth / 2) {
+    else if (theta < (pulseWidth >> 1)) {
         // Phase 2 - bright
         return 255;
     }
-    else if (theta < ((pulseWidth / 2) + transitionWidth)) {
+    else if (theta < ((pulseWidth >> 1) + transitionWidth)) {
         // Phase 3 - downward
-        return ease8InOutQuad((int16_t)255 - ((theta - (pulseWidth / 2)) * 255 / transitionWidth));
+        return ease8InOutQuad((int16_t)255 - (((theta - (pulseWidth >> 1)) << 8) / transitionWidth));
     }
     else {
         // Phase 4 - dim
@@ -65,8 +65,8 @@ void ColorPairs::draw(const DrawState &state)
         const uint8_t mask1Val1 = mask(pos, (Mask1LoopWidthFract/2) - mask1OffsetFract, Mask1LoopWidthFract, Mask1TransitionWidthFract);
         const uint8_t mask2Val = mask(pos, mask2OffsetFract, Mask2LoopWidthFract, Mask2TransitionWidthFract);
         const uint8_t mask3Val = mask(pos, mask3OffsetFract, Mask3LoopWidthFract, Mask3TransitionWidthFract);
-        const uint8_t maskVal0 = scale8(mask1Val0, qadd8(64, scale8(mask2Val, mask3Val)));
-        const uint8_t maskVal1 = scale8(mask1Val1, qadd8(64, scale8(mask2Val, mask3Val)));
+        const uint8_t maskVal0 = scale8(mask1Val0, qadd8(64, scale8(mask2Val, qadd8(64, mask3Val))));
+        const uint8_t maskVal1 = scale8(mask1Val1, qadd8(64, scale8(mask2Val, qadd8(64, mask3Val))));
 
         LED::Array0::HsvBuffer[pos] = CHSV(baseHue + 00, 255, scale8(maskVal0, qadd8(val0Base, fadeAmt)));
         LED::Array1::HsvBuffer[pos] = CHSV(baseHue + 64, 255, scale8(maskVal1, qadd8(val1Base, fadeAmt)));
