@@ -43,12 +43,12 @@ void ShadowsInTheForest::draw(const DrawState &state) {
 
         LED::Array0::Buffer[pos] = 
             ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset, bgArray0Val) -
-            ColorFromPalette(shadowsPal, fg1Pos + fg1TimePhaseOffset, fg1Array0Val) -
+            ColorFromPalette(shadowsPal, fg1Pos + fg1TimePhaseOffset, fg1Array0Val) +
             ColorFromPalette(shadowsPal, fg2Pos - fg2TimePhaseOffset, fg2Array0Val);
 
         LED::Array1::Buffer[pos] = 
             ColorFromPalette(bgPal, bgPos + bgTimePhaseOffset + BGPaletteSpanPx/2, bgArray1Val) -
-            ColorFromPalette(shadowsPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) -
+            ColorFromPalette(shadowsPal, fg1Pos + fg1TimePhaseOffset + FG1PaletteSpanPx/3, fg1Array1Val) +
             ColorFromPalette(shadowsPal, fg2Pos - fg2TimePhaseOffset + FG2PaletteSpanPx/3, fg2Array1Val);
     }
 }
