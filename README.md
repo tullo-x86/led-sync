@@ -32,3 +32,11 @@ Uploading .pio/build/miniwireless/firmware.hex
 > ```
 > Then your programmer is not getting an answer from the chip it's trying to program. Ensure that it's plugged all the way in, **and isn't connected backwards**. _Most_ boards have protection against reverse polarity, including these Anarduino ones, but not all engineers are fond of idiot-proofing things.
 
+## Project notes
+
+* All memory is allocated statically. Don't use `new` or `malloc` — declare larger objects globally so that static analysis can show you the amount of stack memory you have to play with.
+* Between RadioHead and the LED buffers, a good two-thirds of the controller's memory is already reserved, so all of the light patterns renderers are stateless. They render the output values deterministically, based on the passed-in `DrawState` which contains:
+    * The current timestamp
+    * The timestamp of when the trigger was last pulled
+    * The timestamp of when the trigger was last released
+    * The current position of the joystick's X-axis
