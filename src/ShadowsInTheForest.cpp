@@ -5,6 +5,7 @@
 #include "ShadowsInTheForest.h"
 #include "MathUtil.h"
 
+// Background paletter
 const CHSVPalette16 bgPal(
     CHSV( 96, 160, 255), // White-yellowish
     CHSV( 80, 192, 255), // Yellow
@@ -12,6 +13,8 @@ const CHSVPalette16 bgPal(
     CHSV( 96, 255, 255)  // Yellowish
 );
 
+// Shadows palette
+// NB: "white" is sometimes subtracted and sometimes added; see usage
 const CRGBPalette16 shadowsPal(
     CRGB::Grey,     CRGB::White,    CRGB::Black,    CRGB::Black,
     CRGB::Black,    CRGB::Black,    CRGB::Black,    CRGB::Black,
@@ -20,10 +23,12 @@ const CRGBPalette16 shadowsPal(
 );
 
 void ShadowsInTheForest::draw(const DrawState &state) {
+    // Weights
     constexpr uint8_t bgVal = 255;
     constexpr uint8_t fg1Val = 128;
     constexpr uint8_t fg2Val = 64;
 
+    // Use saturating addition to prevent overflow
     const uint8_t bgArray0Val = qadd8(64, scale8(bgVal, 255-state.analog));
     const uint8_t bgArray1Val = qadd8(64, scale8(bgVal, state.analog));
     const uint8_t fg1Array0Val = qadd8(64, scale8(fg1Val, 255-state.analog));
